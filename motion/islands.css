@@ -1,0 +1,13 @@
+/* only Tailwind's theme and utilities: the page's own CSS stays the base (no preflight) */
+@import "tailwindcss/theme.css";
+@import "tailwindcss/utilities.css";
+@source "./components";
+@source "./islands.tsx";
+
+/* the browser's own button and heading look, cleared inside the islands only (zero specificity) */
+:where([data-mb-ready]) :where(button) { background: none; border: 0; padding: 0; margin: 0; font: inherit; color: inherit; }
+:where([data-mb-ready]) :where(h3) { margin: 0; font: 500 17px/1.4 var(--font-text); letter-spacing: 0; }
+/* the kit's own .group (a column) shares its name with Tailwind's group marker */
+[data-mb-ready] button.group { flex-direction: row; min-height: 0; }
+/* and the kit's .grid (the 12-column page grid) shares its name with Tailwind's grid */
+[data-mb-ready] .grid { grid-template-columns: none; column-gap: 0; row-gap: 0; margin: 0; }

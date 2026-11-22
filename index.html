@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="en" data-type="software" data-radius="soft" data-ground="sand" data-buttons="solid" data-motion>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Soundflow: voice typing for Linux, in English and Bangla</title>
+<meta name="description" content="Hold a shortcut, talk, and Soundflow types what you said in any Linux app. Free and open source, for 64-bit Linux, with speech recognition that runs on your computer.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Soundflow: voice typing for Linux">
+<meta property="og:description" content="Hold a shortcut, talk, and Soundflow types what you said in any Linux app.">
+<meta property="og:image" content="share.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#ffffeb">
+<!-- <link rel="canonical" href="https://[the site's domain]/"> once the Vercel domain is final -->
+<meta name="site-kind" content="software">
+<meta name="page-type" content="software">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400..700&family=Figtree:wght@400..600&family=JetBrains+Mono:wght@400..500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Bengali&text=%E0%A6%AC%E0%A6%BE%E0%A6%82%E0%A6%B2%E0%A6%BE&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/system.css">
+<link rel="stylesheet" href="assets/ui/cards.css">
+<link rel="stylesheet" href="assets/motion/motion.css">
+<link rel="stylesheet" href="assets/backgrounds/backgrounds.css">
+<link rel="stylesheet" href="assets/layout/layout.css">
+<link rel="stylesheet" href="assets/icons/icon.css">
+<!-- palette: the app's own colours (start.mjs brand); type: the app's own faces, EB Garamond and Figtree -->
+<style>
+:root {
+  --p-bg: #ffffeb; --p-surface: #f3f3dc; --p-ink: #13201d; --p-muted: #636c63;
+  --p-accent: #034f46; --p-accent-ink: #ffffeb; --p-action: #034f46; --p-action-ink: #ffffeb;
+  --p-inv-bg: #13201d; --p-inv-surface: #212d29; --p-inv-ink: #ffffeb; --p-inv-muted: #9ca295;
+  --p-inv-accent: #ffffeb; --p-inv-accent-ink: #13201d; --p-inv-action: #ffffeb; --p-inv-action-ink: #13201d;
+  --font-display: "EB Garamond", "Noto Serif Bengali", Georgia, serif;
+  --font-text: "Figtree", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --display-weight: 400;
+  --display-tracking: -0.012em;
+  --display-tracking-xl: -0.018em;
+  --ly-scale: 1.12;
+}
+</style>
+<link rel="stylesheet" href="assets/ui/base.css">
+<link rel="stylesheet" href="assets/ui/terminal-run/fragment.css">
+<script>document.documentElement.classList.add('m-enter');setTimeout(()=>document.documentElement.classList.add('m-enter-done'),700)</script>
+<script src="assets/backgrounds/backgrounds.js"></script>
+<script>document.documentElement.classList.add('mo-js');setTimeout(()=>document.documentElement.classList.add('mo-safe'),2500)</script>
+<link rel="stylesheet" href="mb/islands.css">
+<style>
+  /* the hero picture: the whole sign-in window, at its own shape */
+  .hero--split .hero__grid:has(.login) { align-items: center; }
+  .hero--split .hero__grid:has(.login) > .hero__text { align-self: center; }
+  .hero--split .hero__media.login { align-self: center; height: auto; aspect-ratio: 2080 / 1360; border: 1px solid var(--line); background: #ffffeb; }
+  .hero--split .hero__media.login > img { object-fit: contain; }
+  @media (max-width: 1023px) { .hero--split .hero__media.login { flex: none; min-height: 0; } }
+  [data-mb=flip] > p { display: inline; }
+  .footer__lede { line-height: 1.5; }
+  /* privacy: one statement set large, the two promises marked by Motion Brew's highlighter */
+  #privacy > .wrap { display: grid; align-content: center; gap: var(--s-5); height: 100%; }
+  .privacy__text { margin: 0; max-width: 960px; font: var(--display-weight) var(--t-h2)/1.16 var(--font-display); letter-spacing: var(--display-tracking); text-wrap: pretty; }
+  .remove { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s-4); margin-top: var(--s-5); padding: var(--s-4) var(--s-5); border: 1px solid var(--line); border-radius: var(--r-md); background: #fffff7; }
+  .remove p { margin: 0; max-width: 62ch; }
+  .remove code, .step-cmd { font: 500 14px/1.4 var(--font-mono); padding: 2px 6px; border-radius: 6px; background: #e3efe9; color: var(--p-accent); white-space: nowrap; }
+  .remove .dl-row { min-height: 52px; padding: var(--s-2) var(--s-4); }
+
+  /* History: the real window across the wrap, its top in view */
+  .shot { position: relative; margin-top: var(--s-7); overflow: hidden; border: 1px solid var(--line); border-radius: var(--r-lg); background: #f7f7e2; }
+  .shot > img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 0 0; }
+
+  /* the feature panels hold crops of the app at about its real size */
+  #features .panel { --p-h: 336px; }
+  .panel > img.crop { position: absolute; left: 32px; top: 32px; width: var(--w); max-width: none; height: auto; border-radius: 12px 0 0 0; box-shadow: 0 0 0 1px var(--line); }
+  @media (max-width: 639px) { .panel > img.crop { left: 16px; top: 16px; width: calc(var(--w) * .62); } }
+  .clean { position: absolute; top: 32px; left: 32px; right: 32px; width: auto; display: grid; gap: var(--s-3); }
+  .clean__box { padding: var(--s-4) var(--s-5); border: 1px solid var(--line); border-radius: var(--r-md); background: #fffff7; }
+  .clean__box--done { border-color: #9fcabd; background: #f4fbf6; }
+  .clean__label { display: block; margin-bottom: var(--s-1); color: var(--muted); font-size: 13px; }
+  .clean__box p { margin: 0; font-size: 16px; line-height: 1.5; }
+  .clean__step { justify-self: start; display: inline-flex; align-items: center; gap: var(--s-2); padding: 6px 12px; border-radius: 999px; background: var(--p-accent); color: var(--p-accent-ink); font-size: 13px; font-weight: 500; }
+  @media (max-width: 639px) { .clean { top: 16px; left: 16px; right: 16px; gap: var(--s-2); } .clean__box { padding: var(--s-2) var(--s-3); } .clean__box p { font-size: 14px; } .clean__label { display: none; } }
+  #features .panel--dark { background: #121815; }
+  @media (max-width: 1279px) { #features .panel { --p-h: 290px; } }
+  @media (max-width: 639px) { #features .panel { --p-h: 188px; } }
+  @media (max-width: 1279px) { #download { --h: 2; } }
+  @media (max-width: 639px) { .tour-film .chapters { grid-template-columns: 1fr; padding: 0 var(--s-4) var(--s-1); } #tour .grid { row-gap: var(--s-5); } }
+  @media (max-width: 639px) { #faq .faq > .faq__item { gap: var(--s-1); padding: var(--s-3) 0; } #faq .faq__item > h3 { font-size: 17px; } #faq .faq__item p { line-height: 1.45; } #faq .grid { row-gap: var(--s-5); } }
+  .paste { position: absolute; top: 32px; left: 32px; right: 32px; width: auto; display: grid; gap: var(--s-5); }
+  .paste__doc { padding: var(--s-5) var(--s-6); border-radius: var(--r-md); background: #fffff7; border: 1px solid var(--line); }
+  .paste__doc b { display: block; font: 400 22px/1.2 var(--font-display); }
+  .paste__doc small { display: block; margin: 2px 0 var(--s-4); color: var(--muted); font-size: 13px; }
+  .paste__doc p { margin: 0; font-size: 15px; line-height: 1.55; }
+  .paste__caret { display: inline-block; width: 1.5px; height: 1.05em; margin-left: 1px; vertical-align: -2px; background: var(--p-accent); animation: caret 1.1s steps(1) infinite; }
+  @keyframes caret { 50% { opacity: 0; } }
+  .paste__pill { justify-self: center; width: 202px; height: auto; }
+  @media (max-width: 639px) { .paste { top: 16px; left: 16px; right: 16px; gap: var(--s-3); } .paste__doc { padding: var(--s-3) var(--s-4); } .paste__doc small { margin-bottom: var(--s-2); } .paste__pill { width: 160px; } }
+  @media (prefers-reduced-motion: reduce) { .paste__caret { animation: none; } }
+
+  #faq [data-mb=faq]:not([data-mb-ready]) .faq__item { padding: var(--s-4) 0; }
+  @media (max-width: 639px) { .nav__actions > .nav__link { display: none; } #faq .stack-6 { gap: var(--s-4); } }
+  @media (max-width: 359px) { header.nav .nav__actions > .btn { display: none; } }
+  /* the tour film */
+  .tour-film { position: relative; display: flex; flex-direction: column; overflow: hidden; border-radius: var(--r-lg); background: #0e1412; color: #ffffeb; }
+  .tour-film > video { display: block; width: 100%; aspect-ratio: 4 / 3; height: auto; background: #000; }
+
+  /* install: the two files as download rows */
+  #download .panel { --p-h: 300px; }
+  @media (max-width: 639px) { #download .panel { --p-h: 260px; } }
+  .dl-list { position: absolute; top: 32px; left: 24px; right: 24px; width: auto; display: grid; gap: var(--s-3); margin: 0; padding: 0; list-style: none; }
+  .dl-row { display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; align-items: center; gap: var(--s-4); min-height: 64px; padding: var(--s-3) var(--s-4); border: 1px solid var(--line); border-radius: var(--r-md); background: #fffff7; color: var(--ink); text-decoration: none; }
+  .dl-row:hover { border-color: var(--p-accent); }
+  .dl-row__icon { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 10px; background: #e3efe9; color: var(--p-accent); }
+  .dl-row > span:nth-child(2) { min-width: 0; }
+  .dl-row__name { display: block; overflow: hidden; font: 500 15px/1.3 var(--font-mono); white-space: nowrap; text-overflow: ellipsis; }
+  @media (max-width: 639px) { .dl-row__name { white-space: normal; overflow-wrap: anywhere; font-size: 14px; } }
+  .dl-row__size { display: block; color: var(--muted); font-size: 13px; }
+  .dl-row__go { color: var(--p-accent); }
+  @media (max-width: 639px) { .dl-list { top: 16px; left: 16px; right: 16px; } }
+  #download .section-head--split + .grid { margin-top: var(--s-7); }
+  .chapters { display: grid; grid-template-columns: 1fr 1fr; column-gap: var(--s-6); margin: 0; padding: var(--s-3) var(--s-6) var(--s-4); list-style: none; }
+  .chapters button { display: grid; grid-template-columns: 48px 1fr; width: 100%; min-height: 44px; padding: 0; border: 0; border-bottom: 1px solid rgba(255,255,235,.12); background: none; color: #ffffeb; font: 400 16px/1.4 var(--font-text); text-align: left; cursor: pointer; align-items: center; }
+  .chapters button span { color: #9ca295; font-variant-numeric: tabular-nums; }
+  .chapters button:hover { color: #7fd6be; }
+</style>
+</head>
+<body>
+<!-- type: software
+     deal: hero split, nav nav-centre, close close-type, footer footer-dark, rhythm surface-pairs, buttons solid, mark: the app's own icon, grounds sand (no CSS ground)
+     palette: the app's own (cream #FFFFEB, green #034F46), set with start.mjs brand; type: EB Garamond and Figtree, the app's faces
+     motion: Motion Brew islands (mb/, built from motion/): flip-words h1, annotation-text, highlight-text #privacy, blur-accordion #faq, blur-text close -->
+<header class="nav nav--centre">
+  <div class="wrap nav__bar">
+    <a class="skip-link" href="#top">Skip to content</a>
+    <a class="nav__logo" href="#top"><img src="favicon.svg" alt="" width="28" height="28">Soundflow</a>
+    <nav class="nav__links" aria-label="Main">
+      <div class="nav__item"><a class="nav__link" href="#features">Features</a></div>
+      <div class="nav__item"><a class="nav__link" href="#tour">Tour</a></div>
+      <div class="nav__item"><a class="nav__link" href="#download">Install</a></div>
+      <div class="nav__item"><a class="nav__link" href="#faq">Questions</a></div>
+    </nav>
+    <div class="nav__actions">
+      <a class="btn btn--primary" href="#download">Download for Linux</a>
+    </div>
+    <button class="nav__toggle" type="button" aria-expanded="false" aria-label="Menu">
+      <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 5h14M2 13h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero hero--split" data-enter aria-labelledby="hero-h">
+    <div class="wrap"><div class="hero-text grid hero__grid">
+      <div class="hero__text span-5">
+        <h1 id="hero-h" data-mb="flip" data-before="Voice typing for Linux, in" data-words="English|বাংলা">Voice typing for Linux, in English and Bangla</h1>
+        <p class="hero__lead" data-mb="annotate">Hold Ctrl+Alt+Space, talk, and let go. Soundflow types what you said into any app. It is <span data-mark>free and open source</span>.</p>
+        <div class="btn-row">
+          <a class="btn btn--primary" href="#download">Download for Linux<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a>
+          <a class="btn btn--secondary" href="#tour">Watch the tour</a>
+        </div>
+      </div>
+      <div class="hero__media login span-7 start-6">
+        <img src="img/login.webp" width="2080" height="1360" alt="Soundflow's sign-in window: the Soundflow wordmark over a photo of flowers, and email and password fields with a Sign in button" fetchpriority="high" data-source="client" data-subject="the Soundflow app">
+      </div>
+    </div></div>
+  </section>
+
+  <section class="section" id="history" aria-labelledby="history-h">
+    <div class="wrap">
+      <div class="grid grid--top">
+        <h2 class="span-5" id="history-h">Every dictation, kept in History</h2>
+        <div class="span-6 start-7 stack-4">
+          <p>Search what you said last week, fix a word, copy it again or export it. History follows you to every computer you sign in on.</p>
+        </div>
+      </div>
+      <div class="shot fill" data-visual>
+        <img src="img/history.webp" width="2400" height="1538" alt="The History screen: a search box, a list of this week's dictations with times and word counts, and the open dictation with Copy, Edit and Polish" loading="lazy" data-source="client" data-subject="the Soundflow app">
+      </div>
+    </div>
+  </section>
+
+  <section class="section g2" id="features" aria-labelledby="features-h">
+    <div class="wrap">
+      <div class="group">
+        <div class="section-head">
+          <h2 id="features-h">Speak into any app on your desktop. <span class="muted">Soundflow listens only while you hold the keys.</span></h2>
+        </div>
+        <div class="grid">
+          <article class="card card--row card--open span-6 m-nolift">
+            <h3>Pastes into any app at your cursor</h3>
+            <p>A small pill shows a timer while you talk. Let go and the text is pasted; press Esc to cancel.</p>
+            <div class="panel" data-visual role="img" aria-label="A note called Friday release with a dictated sentence in it, and Soundflow's pill under it">
+              <div class="paste">
+                <div class="paste__doc"><b>Friday release</b><small>Status for the team</small><p>Quick note for the team: the launch video is ready, and I'll share the final cut after lunch.<span class="paste__caret"></span></p></div>
+                <img class="paste__pill" src="img/pill-listening.webp" width="404" height="84" alt="">
+              </div>
+            </div>
+          </article>
+          <article class="card card--row card--open span-6 m-nolift">
+            <h3>Understands English and Bangla</h3>
+            <p>Pick English or Bangla, or let Soundflow hear which one you speak.</p>
+            <div class="panel" data-visual><img class="crop" style="--w: 580px" src="img/language.webp" width="1160" height="1168" alt="The language menu open on the Home screen, with English or Bangla highlighted" loading="lazy" data-source="client" data-subject="the Soundflow app"></div>
+          </article>
+        </div>
+      </div>
+      <div class="grid">
+        <article class="card card--row card--open span-6 m-nolift">
+          <h3>Removes um, uh and hmm from dictation</h3>
+          <p>Format fixes punctuation, capitals and filler words in one click.</p>
+          <div class="panel" data-visual role="img" aria-label="Playground: a sentence with um and uh, the Format action, and the result without them">
+            <div class="clean">
+              <div class="clean__box"><span class="clean__label">Your text</span><p>um, so the launch went great. uh sign ups doubled overnight, so lets celebrate on friday</p></div>
+              <span class="clean__step">Format</span>
+              <div class="clean__box clean__box--done"><span class="clean__label">Result</span><p>So the launch went great. Sign ups doubled overnight, so lets celebrate on friday.</p></div>
+            </div>
+          </div>
+        </article>
+        <article class="card card--row card--open span-6 m-nolift">
+          <h3>Pick a fast or an accurate speech model</h3>
+          <p>Download one in Preferences. It runs on your own computer.</p>
+          <div class="panel panel--dark" data-visual><img class="crop" style="--w: 800px" src="img/models.webp" width="1600" height="1200" alt="The speech model list in the dark theme, with Small in use and Large-v3 Turbo downloading" loading="lazy" data-source="client" data-subject="the Soundflow app"></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section statement" id="privacy" aria-label="Privacy">
+    <div class="wrap">
+      <p class="t-label">Privacy</p>
+      <p class="privacy__text" data-mb="highlight" data-highlights="the audio is never uploaded|Only your transcripts sync">Your voice becomes text on your own computer, and the audio is never uploaded. Only your transcripts sync, so History follows you to every computer you sign in on.</p>
+    </div>
+  </section>
+
+  <section class="section ground-surface" id="tour" aria-labelledby="tour-h">
+    <div class="wrap">
+      <div class="grid grid--top">
+        <div class="span-5 stack-6">
+          <h2 id="tour-h">See Soundflow in a 90-second tour</h2>
+          <p class="t-lead">Sign in, dictate on the Home screen, paste into another app, find it in History, clean it up in Playground and pick a speech model.</p>
+        </div>
+        <div class="tour-film span-6 start-7" data-visual>
+          <video id="tour-video" controls preload="none" playsinline poster="media/tour-poster.jpg" width="1280" height="960" aria-label="A 90-second tour of the Soundflow app">
+            <source src="media/soundflow-tour.mp4" type="video/mp4">
+          </video>
+        <ol class="chapters" aria-label="Chapters">
+          <li><button type="button" data-seek="3"><span>0:03</span>Sign in</button></li>
+          <li><button type="button" data-seek="16"><span>0:16</span>Home and languages</button></li>
+          <li><button type="button" data-seek="24"><span>0:24</span>Dictate into another app</button></li>
+          <li><button type="button" data-seek="37"><span>0:37</span>History</button></li>
+          <li><button type="button" data-seek="47"><span>0:47</span>Playground</button></li>
+          <li><button type="button" data-seek="58"><span>0:58</span>Preferences and themes</button></li>
+        </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section ground-surface" id="download" style="--hm: 2" aria-labelledby="download-h">
+    <div class="wrap">
+      <div class="section-head--split">
+        <div>
+          <h2 id="download-h">Install Soundflow in 3 steps</h2>
+          <p>For 64-bit Linux with a microphone. Free and open source.</p>
+        </div>
+        <a class="link" href="https://github.com/Sayem-Ahmed-Shayeed/SoundFlow">Contribute on GitHub</a>
+      </div>
+      <div class="grid">
+        <article class="card card--row card--open span-4 m-nolift">
+          <span class="step-num">1</span>
+          <h3>Download the app and its installer</h3>
+          <p>Save both files in Downloads.</p>
+          <div class="panel" data-visual>
+            <ul class="dl-list">
+              <li><a class="dl-row" href="https://github.com/Sayem-Ahmed-Shayeed/SoundFlow/releases/download/v0.2.0/soundflow-0.2.0-linux-x64.tar.gz" download>
+                <span class="dl-row__icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M3 6.5 10 3l7 3.5v7L10 17l-7-3.5z"/><path d="M3 6.5 10 10l7-3.5M10 10v7"/></svg></span>
+                <span><span class="dl-row__name">soundflow-0.2.0-linux-x64.tar.gz</span><span class="dl-row__size">The app, 210 MB</span></span>
+                <svg class="dl-row__go" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3v9M5 8.5 9 12.5l4-4M3.5 15h11"/></svg>
+              </a></li>
+              <li><a class="dl-row" href="https://github.com/Sayem-Ahmed-Shayeed/SoundFlow/releases/download/v0.2.0/install.sh" download>
+                <span class="dl-row__icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="3.5" width="15" height="13" rx="2"/><path d="m6 8 2.5 2L6 12M10.5 12.5H14"/></svg></span>
+                <span><span class="dl-row__name">install.sh</span><span class="dl-row__size">The installer</span></span>
+                <svg class="dl-row__go" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3v9M5 8.5 9 12.5l4-4M3.5 15h11"/></svg>
+              </a></li>
+            </ul>
+          </div>
+        </article>
+        <article class="card card--row card--open span-4 m-nolift">
+          <span class="step-num">2</span>
+          <h3>Run install.sh in a terminal</h3>
+          <p>Open a terminal in Downloads, make the installer runnable with chmod +x, then run it.</p>
+          <div class="panel" data-visual role="img" aria-label="A terminal running chmod +x install.sh and ./install.sh until it says Soundflow is installed">
+            <div class="stage"><div class="at-rise fit" style="--fit-max:440px;--ax:max(24px, 50% - 220px);--ay:32px;--ay-sm:16px" data-ui-loop>
+              <div class="ui ui-panel ui-term" data-ui="terminal-run">
+                <div class="ui-term__head">
+                  <span class="ui-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+                  <span class="ui-term__title">Downloads</span>
+                  <span class="ui-meta">bash</span>
+                  <span class="ui-spacer"></span>
+                </div>
+                <div class="ui-term__screen" data-term-screen>
+                  <div class="ui-term__track" data-term-track>
+                    <div class="ui-term__ln ui-term__cmd"><span class="ui-term__cwd">~/Downloads</span><span class="ui-term__sig">$</span><span class="ui-term__typed" data-term-cmd>chmod +x install.sh &amp;&amp; ./install.sh</span></div>
+                    <div class="ui-term__ln ui-term__log" data-term-out data-term-step><svg class="ui-term__tick" viewBox="0 0 16 16" aria-hidden="true"><path d="m3.5 8.4 2.8 2.8 6.2-6.4"/></svg><span class="ui-term__path">Adding Soundflow to the app menu</span></div>
+                    <div class="ui-term__ln ui-term__done" data-term-out data-term-done><span class="ui-term__ok"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4.5 8.3 2.4 2.4 4.6-5"/></svg></span><b>Soundflow is installed.</b></div>
+                    <div class="ui-term__ln ui-term__cmd" data-term-next><span class="ui-term__cwd">~/Downloads</span><span class="ui-term__sig">$</span><span class="ui-term__typed"></span><i class="ui-term__caret" aria-hidden="true"></i></div>
+                  </div>
+                </div>
+              </div>
+            </div></div>
+          </div>
+        </article>
+        <article class="card card--row card--open span-4 m-nolift">
+          <span class="step-num">3</span>
+          <h3>Sign in and start talking</h3>
+          <p>Open Soundflow from the app menu, sign in, and hold Ctrl+Alt+Space in any app.</p>
+          <div class="panel" data-visual><img class="crop" style="--w: 620px" src="img/hero.webp" width="1440" height="1146" alt="Soundflow's Home screen while it listens: a green panel with a waveform and a timer" loading="lazy" data-source="client" data-subject="the Soundflow app"></div>
+        </article>
+      </div>
+      <div class="remove">
+        <p>To remove Soundflow later, download uninstall.sh and run <code>chmod +x uninstall.sh &amp;&amp; ./uninstall.sh</code>. Your dictations stay unless you choose to delete them.</p>
+        <a class="dl-row" href="https://github.com/Sayem-Ahmed-Shayeed/SoundFlow/releases/download/v0.2.0/uninstall.sh" download>
+          <span class="dl-row__icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="3.5" width="15" height="13" rx="2"/><path d="m6 8 2.5 2L6 12M10.5 12.5H14"/></svg></span>
+          <span><span class="dl-row__name">uninstall.sh</span><span class="dl-row__size">The uninstaller</span></span>
+          <svg class="dl-row__go" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3v9M5 8.5 9 12.5l4-4M3.5 15h11"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="faq" aria-labelledby="faq-h">
+    <div class="wrap">
+      <div class="grid grid--top">
+        <div class="span-5 stack-6">
+          <h2 id="faq-h">Questions about Soundflow</h2>
+          <p>Soundflow is free and open source. Found a bug or want to help? <a class="link" href="https://github.com/Sayem-Ahmed-Shayeed/SoundFlow">Contribute on GitHub</a>.</p>
+        </div>
+        <div class="faq span-6 start-7" data-mb="faq">
+          <div class="faq__item"><h3>Is Soundflow free?</h3><p>Yes. Soundflow is free and open source, with no trial and no paid plan.</p></div>
+          <div class="faq__item"><h3>Does Soundflow send my voice anywhere?</h3><p>No. Your voice becomes text on your computer and the audio is never uploaded. Only your transcripts sync to your account.</p></div>
+          <div class="faq__item"><h3>Does the app need a graphics card?</h3><p>No. It runs on any 64-bit Linux computer. A graphics card only makes the larger models faster.</p></div>
+          <div class="faq__item"><h3>How do I remove the app?</h3><p>Download uninstall.sh from the install steps, run chmod +x uninstall.sh, then ./uninstall.sh. Your dictations stay unless you choose to delete them.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer closing footer--dark ground-inverse" id="contact" aria-labelledby="close-h">
+  <div class="wrap">
+    <div class="closing__cta close--type">
+      <div class="section-head">
+        <h2 id="close-h" data-mb="blur">Download Soundflow for Linux</h2>
+        <p>Free and open source, for 64-bit Linux.</p>
+      </div>
+      <a class="btn btn--primary" href="#download">Download for Linux<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a>
+    </div>
+    <div class="closing__links">
+      <div class="grid">
+        <div class="span-4 stack-4">
+          <a class="nav__logo" href="#top"><img src="favicon.svg" alt="" width="28" height="28">Soundflow</a>
+          <p class="footer__lede">Free and open source voice typing for Linux, in English and Bangla.</p>
+        </div>
+        <div class="span-2 start-7 footer__col"><h3>App</h3><ul><li><a href="#features">Features</a></li><li><a href="#history">History</a></li><li><a href="#tour">Tour</a></li></ul></div>
+        <div class="span-2 footer__col"><h3>Install</h3><ul><li><a href="#download">Install steps</a></li><li><a href="#faq">Questions</a></li></ul></div>
+        <div class="span-2 footer__col"><h3>Open source</h3><ul><li><a href="https://github.com/Sayem-Ahmed-Shayeed/SoundFlow">Contribute on GitHub</a></li></ul></div>
+      </div>
+      <div class="footer__legal">
+        <span>&copy; 2026 Soundflow</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script type="module" src="assets/system.js"></script>
+<script type="module" src="assets/motion/motion.js"></script>
+<script type="module" src="assets/layout/layout.js"></script>
+<script type="module" src="mb/islands.js"></script>
+<script>
+  // chapters jump the tour film
+  const film = document.getElementById('tour-video');
+  document.querySelectorAll('[data-seek]').forEach((b) => b.addEventListener('click', () => {
+    film.currentTime = Number(b.dataset.seek); film.play().catch(() => {});
+  }));
+</script>
+</body>
+</html>

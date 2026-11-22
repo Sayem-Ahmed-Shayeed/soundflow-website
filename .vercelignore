@@ -1,0 +1,22 @@
+# checker output and its Chrome profile
+.taste-skill
+shots
+# design-kit parts this page does not load
+assets/photos
+assets/objects
+assets/scenes
+assets/effects
+assets/components
+assets/diagrams
+assets/starter.html
+assets/layout/*
+!assets/layout/layout.css
+!assets/layout/layout.js
+assets/icons/*
+!assets/icons/icon.css
+assets/moments/*
+!assets/moments/moments.js
+!assets/moments/lib.js
+!assets/moments/word-highlight
+assets/ui/_lab
+motion
